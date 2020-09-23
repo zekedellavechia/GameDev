@@ -9,7 +9,7 @@ public class Hacker : MonoBehaviour
 
     enum Screen { MainMenu, Password, Win}
     Screen currentScreen;
-
+    string password;
     void Start()
     {
         //this print works in the Console of unity
@@ -49,37 +49,51 @@ public class Hacker : MonoBehaviour
         { 
         RunMainMenu(input);
         }
+        else if (currentScreen == Screen.Password)
+        {
+            CheckPassword(input);
+        }
     }
+
+ 
 
     private void RunMainMenu(string input)
     {
+        
+
         if (input == "1")
         {
             Terminal.ClearScreen();
-
+            currentScreen = Screen.Password;
             level = 1;
-            Terminal.WriteLine("You choose Level 1");
+            password = "donkey";
+            Terminal.WriteLine("Please Type your Password: ");
             print("You choose level 1");
             StartGame();
         }
         else if (input == "2")
         {
             Terminal.ClearScreen();
+            currentScreen = Screen.Password;
             level = 2;
-            Terminal.WriteLine("You choose Level 2");
+            password = "red";
+            Terminal.WriteLine("Please Type your Password: ");
             print("You choose level 2");
         }
         else if (input == "3")
         {
             Terminal.ClearScreen();
+            currentScreen = Screen.Password;
             level = 3;
-            Terminal.WriteLine("You choose Level 3");
+            password = "head";
+            Terminal.WriteLine("Please Type your Password: ");
             print("You choose level 3");
         }
 
         else
         {
             Terminal.ClearScreen();
+            currentScreen = Screen.MainMenu;
             Terminal.WriteLine("Invalid command, please choose a Level between 1 and 3");
             print("Invalid command");
         }
@@ -89,7 +103,6 @@ public class Hacker : MonoBehaviour
     {
         currentScreen = Screen.Password;
         Terminal.WriteLine("Welcome to Level " + level);
-        Terminal.WriteLine("Please type the password: ");
     }
     //variables
     //variables are like boxes, the way to define is like "var lives = 3;" or reemplace var with the 
@@ -101,5 +114,17 @@ public class Hacker : MonoBehaviour
     //else if (some other expression is true)
     //else {execute this code only]
 
+    void CheckPassword(string input)
+    {
+        if (input == password)
+        {
+            Terminal.WriteLine("Good Password");
+            currentScreen = Screen.Win;
+        }
+        else
+        {
+            Terminal.WriteLine("Ass Password");
+        }
+    }
 
 }
