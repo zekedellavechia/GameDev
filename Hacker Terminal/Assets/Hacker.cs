@@ -5,6 +5,15 @@ using UnityEngine;
 
 public class Hacker : MonoBehaviour
 {
+
+    //GAME CONFIG
+
+    string[] level1passwords = { "pepsi", "coca", "7up" };
+
+
+
+
+
     int level;
 
     enum Screen { MainMenu, Password, Win}
@@ -15,6 +24,7 @@ public class Hacker : MonoBehaviour
         //this print works in the Console of unity
         ConsoleBackgroundMessages();
         ShowMainMenu("Hello Ben");
+        print(level1passwords[0]);
 
         
     }
@@ -59,14 +69,19 @@ public class Hacker : MonoBehaviour
 
     private void RunMainMenu(string input)
     {
-        
+        bool isValidLevelNumber = (input == "1" || input == "2" || input == "3");
+        if (isValidLevelNumber)
+        {
+            level = int.Parse(input);
+        }    
+
 
         if (input == "1")
         {
             Terminal.ClearScreen();
             currentScreen = Screen.Password;
             level = 1;
-            password = "donkey";
+            password = level1passwords[0];
             Terminal.WriteLine("Please Type your Password: ");
             print("You choose level 1");
             StartGame();
