@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Hacker : MonoBehaviour
 {
 
     //GAME CONFIG
 
-    string[] level1passwords = { "pepsi", "coca", "7up" };
-
-
+    string[] level1passwords = { "ren", "stimpy"};
+    string[] level2passwords = { "kenny", "stan", "kyle", "cartman", "randy", "butters" };
+    string[] level3passwords = { "bart", "homero", "marge", "maggie", "apu", "nelson" };
 
 
 
@@ -22,30 +19,26 @@ public class Hacker : MonoBehaviour
     void Start()
     {
         //this print works in the Console of unity
-        ConsoleBackgroundMessages();
-        ShowMainMenu("Hello Ben");
+        ShowMainMenu("Bienvenido Cono");
         print(level1passwords[0]);
 
         
     }
 
-    private void ConsoleBackgroundMessages()
-    {
-        print("Game Initiated");
-        print("Welcome!");
-        print("Game is running up.");
-    }
+
 
     private void ShowMainMenu(string greeting)
     {
-        string nombre = "Benito";
+        //string nombre = "Benito";
         currentScreen = Screen.MainMenu;
         Terminal.ClearScreen();
         Terminal.WriteLine(greeting);
-        Terminal.WriteLine("Press 1 for Level Easy (Colours)");
-        Terminal.WriteLine("Press 2 for Level Medium (Games)");
-        Terminal.WriteLine("Press 3 for Lever Hard (Random)");
-        Terminal.WriteLine("Choose your destiny " + nombre + ": ");
+        Terminal.WriteLine("Tienes que advinar quien eres...");
+        Terminal.WriteLine("Elige el nivel:");
+        Terminal.WriteLine("Pon 1 para Nivel MTV");
+        Terminal.WriteLine("Pon 2 para Nivel Nieve");
+        Terminal.WriteLine("Pon 3 para Nivel Amarillo");
+        //Terminal.WriteLine("Choose your destiny " + nombre + ": ");
     }
 
     void OnUserInput(string input)
@@ -53,11 +46,11 @@ public class Hacker : MonoBehaviour
         if (input == "menu")
         {
             Terminal.ClearScreen();
-            ShowMainMenu("Welcome back Ben");
+            ShowMainMenu("Bienvenido de vuelta Cono!");
         }
         else if (currentScreen == Screen.MainMenu)
         { 
-        RunMainMenu(input);
+            RunMainMenu(input);
         }
         else if (currentScreen == Screen.Password)
         {
@@ -73,52 +66,46 @@ public class Hacker : MonoBehaviour
         if (isValidLevelNumber)
         {
             level = int.Parse(input);
+            AskForPassword();
         }    
-
-
-        if (input == "1")
-        {
-            Terminal.ClearScreen();
-            currentScreen = Screen.Password;
-            level = 1;
-            password = level1passwords[0];
-            Terminal.WriteLine("Please Type your Password: ");
-            print("You choose level 1");
-            StartGame();
-        }
-        else if (input == "2")
-        {
-            Terminal.ClearScreen();
-            currentScreen = Screen.Password;
-            level = 2;
-            password = "red";
-            Terminal.WriteLine("Please Type your Password: ");
-            print("You choose level 2");
-        }
-        else if (input == "3")
-        {
-            Terminal.ClearScreen();
-            currentScreen = Screen.Password;
-            level = 3;
-            password = "head";
-            Terminal.WriteLine("Please Type your Password: ");
-            print("You choose level 3");
-        }
 
         else
         {
             Terminal.ClearScreen();
             currentScreen = Screen.MainMenu;
-            Terminal.WriteLine("Invalid command, please choose a Level between 1 and 3");
+            Terminal.WriteLine("Comando invalido, por favor elige entre 1 y 3");
             print("Invalid command");
         }
     }
 
-    void StartGame()
+    void AskForPassword()
     {
         currentScreen = Screen.Password;
-        Terminal.WriteLine("Welcome to Level " + level);
+        Terminal.ClearScreen();
+        SetRandomPassword();
+        Terminal.WriteLine("Pon el Password (nombre del personaje) para ganar, pista: " + password.Anagram());
     }
+
+    private void SetRandomPassword()
+    {
+        switch (level)
+        {
+            case 1:
+                password = level1passwords[Random.Range(0, level1passwords.Length)];
+                break;
+            case 2:
+                password = level2passwords[Random.Range(0, level2passwords.Length)];
+                break;
+            case 3:
+                password = level3passwords[Random.Range(0, level3passwords.Length)];
+                break;
+            default:
+                Debug.LogError("No level password");
+                break;
+
+        }
+    }
+
     //variables
     //variables are like boxes, the way to define is like "var lives = 3;" or reemplace var with the 
 
@@ -133,13 +120,64 @@ public class Hacker : MonoBehaviour
     {
         if (input == password)
         {
-            Terminal.WriteLine("Good Password");
-            currentScreen = Screen.Win;
+            DisplayWinScreen();
         }
         else
         {
-            Terminal.WriteLine("Ass Password");
+            AskForPassword();
+           // Terminal.WriteLine("Mal Password, intenta nuevamente o pon menu para volver");
         }
     }
 
+    void DisplayWinScreen()
+    {
+        currentScreen = Screen.Win;
+        Terminal.ClearScreen();
+        ShowLevelReward();
+
+    }
+
+    void ShowLevelReward()
+    {
+        switch (level)
+        {
+            case 1:
+                Terminal.WriteLine(@"
+     /|_\|/_/|
+    , ,--,-. .
+   / ( O  O ) \
+   |  (___)'  |
+   |.   ,     |
+  /  '-'\__,' |
+Al final eras Stimpy, muy tonto. Fin.");
+                break;
+            case 2:
+                Terminal.WriteLine(@"
+        .
+       -|-
+        |
+    .-'~~~`-.
+  .'         `.
+  |  R  I  P  |
+  |           |
+  |           |
+\\|           |//
+Al final eras Kenny de South Park o sea moriste. Fin.");
+            break;
+            case 3:
+                Terminal.WriteLine(@"
+
+ |\/\/\/|  
+ |      |  
+ |      |  
+ | (o)(o)  
+ C      _) 
+  | ,___|  
+  |   /
+Al final eras Bart pero cuando vende el alma. Fin");
+                break;
+
+        }
+          
+    }
 }
