@@ -4,11 +4,11 @@ public class Hacker : MonoBehaviour
 {
 
     //GAME CONFIG
-
-    string[] level1passwords = { "ren", "stimpy"};
+    const string menuHint = "Escribe menu para regresar!";
+    string[] level1passwords = { "ren", "stimpy", "tronco"};
     string[] level2passwords = { "kenny", "stan", "kyle", "cartman", "randy", "butters" };
     string[] level3passwords = { "bart", "homero", "marge", "maggie", "apu", "nelson" };
-
+    string[] level69passwords = { "galactico", "emmux vx", "el gran cono mayor" };
 
 
     int level;
@@ -20,7 +20,7 @@ public class Hacker : MonoBehaviour
     {
         //this print works in the Console of unity
         ShowMainMenu("Bienvenido Cono");
-        print(level1passwords[0]);
+
 
         
     }
@@ -60,9 +60,9 @@ public class Hacker : MonoBehaviour
 
  
 
-    private void RunMainMenu(string input)
+    void RunMainMenu(string input)
     {
-        bool isValidLevelNumber = (input == "1" || input == "2" || input == "3");
+        bool isValidLevelNumber = (input == "1" || input == "2" || input == "3" || input == "69");
         if (isValidLevelNumber)
         {
             level = int.Parse(input);
@@ -86,7 +86,7 @@ public class Hacker : MonoBehaviour
         Terminal.WriteLine("Pon el Password (nombre del personaje) para ganar, pista: " + password.Anagram());
     }
 
-    private void SetRandomPassword()
+    void SetRandomPassword()
     {
         switch (level)
         {
@@ -98,6 +98,9 @@ public class Hacker : MonoBehaviour
                 break;
             case 3:
                 password = level3passwords[Random.Range(0, level3passwords.Length)];
+                break;
+            case 69:
+                password = level69passwords[Random.Range(0, level69passwords.Length)];
                 break;
             default:
                 Debug.LogError("No level password");
@@ -134,6 +137,7 @@ public class Hacker : MonoBehaviour
         currentScreen = Screen.Win;
         Terminal.ClearScreen();
         ShowLevelReward();
+        Terminal.WriteLine(menuHint);
 
     }
 
@@ -162,7 +166,7 @@ Al final eras Stimpy, muy tonto. Fin.");
   |           |
   |           |
 \\|           |//
-Al final eras Kenny de South Park o sea moriste. Fin.");
+Eras Kenny de South Park. Fin.");
             break;
             case 3:
                 Terminal.WriteLine(@"
@@ -175,6 +179,16 @@ Al final eras Kenny de South Park o sea moriste. Fin.");
   | ,___|  
   |   /
 Al final eras Bart pero cuando vende el alma. Fin");
+                break;
+            case 69:
+                Terminal.WriteLine(@"
+____   ________  ___
+\   \ /   /\   \/  /
+ \   Y   /  \     / 
+  \     /   /     \ 
+   \___/   /___/\  \
+                 \_/
+Galactico Wins. Fatality.");
                 break;
 
         }
