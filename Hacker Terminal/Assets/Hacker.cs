@@ -48,8 +48,13 @@ public class Hacker : MonoBehaviour
             Terminal.ClearScreen();
             ShowMainMenu("Bienvenido de vuelta Cono!");
         }
+        else if (input == "quit" || input == "exit" || input == "salir" || input == "close" || input == "cerrar")
+        {
+            Terminal.WriteLine("Puedes cerrar la pestaña.")
+            Application.Quit();
+        }
         else if (currentScreen == Screen.MainMenu)
-        { 
+        {
             RunMainMenu(input);
         }
         else if (currentScreen == Screen.Password)
@@ -58,7 +63,7 @@ public class Hacker : MonoBehaviour
         }
     }
 
- 
+
 
     void RunMainMenu(string input)
     {
