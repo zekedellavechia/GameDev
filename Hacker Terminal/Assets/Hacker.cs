@@ -50,7 +50,7 @@ public class Hacker : MonoBehaviour
         }
         else if (input == "quit" || input == "exit" || input == "salir" || input == "close" || input == "cerrar")
         {
-            Terminal.WriteLine("Puedes cerrar la pestaña.")
+            Terminal.WriteLine("Puedes cerrar la pestaña.");
             Application.Quit();
         }
         else if (currentScreen == Screen.MainMenu)
