@@ -5,9 +5,9 @@ public class Hacker : MonoBehaviour
 
     //GAME CONFIG
     const string menuHint = "Escribe menu para regresar!";
-    string[] level1passwords = { "ren", "stimpy", "tronco"};
-    string[] level2passwords = { "kenny", "stan", "kyle", "cartman", "randy", "butters" };
-    string[] level3passwords = { "bart", "homero", "marge", "maggie", "apu", "nelson" };
+    string[] level1passwords = { "batistuta", "maradona", "messi", "banega", "mascherano", "kempes"};
+    string[] level2passwords = { "veron", "schelotto", "palermo", "castroman", "almada", "zaracho", "de la cruz", "almendra", "santos borre", "martinez quarta", "ferrari" };
+    string[] level3passwords = { "ronaldinho", "rivaldo", "dida", "kaka", "roberto carlos", "pele" };
     string[] level69passwords = { "galactico", "emmux vx", "el gran cono mayor" };
 
 
@@ -19,7 +19,7 @@ public class Hacker : MonoBehaviour
     void Start()
     {
         //this print works in the Console of unity
-        ShowMainMenu("Bienvenido Cono");
+        ShowMainMenu("Bienvenido Crack!");
 
 
         
@@ -33,11 +33,11 @@ public class Hacker : MonoBehaviour
         currentScreen = Screen.MainMenu;
         Terminal.ClearScreen();
         Terminal.WriteLine(greeting);
-        Terminal.WriteLine("Tienes que advinar quien eres...");
+        Terminal.WriteLine("Tienes que advinar el jugador de fútbol (todo en minusculas porque esta programado asi)");
         Terminal.WriteLine("Elige el nivel:");
-        Terminal.WriteLine("Pon 1 para Nivel MTV");
-        Terminal.WriteLine("Pon 2 para Nivel Nieve");
-        Terminal.WriteLine("Pon 3 para Nivel Amarillo");
+        Terminal.WriteLine("Pon 1 para Selección Argentina");
+        Terminal.WriteLine("Pon 2 para Liga Argentina");
+        Terminal.WriteLine("Pon 3 para Brasil");
         //Terminal.WriteLine("Choose your destiny " + nombre + ": ");
     }
 
@@ -46,7 +46,7 @@ public class Hacker : MonoBehaviour
         if (input == "menu")
         {
             Terminal.ClearScreen();
-            ShowMainMenu("Bienvenido de vuelta Cono!");
+            ShowMainMenu("Bienvenido de vuelta Crack!");
         }
         else if (input == "quit" || input == "exit" || input == "salir" || input == "close" || input == "cerrar")
         {
@@ -88,7 +88,7 @@ public class Hacker : MonoBehaviour
         currentScreen = Screen.Password;
         Terminal.ClearScreen();
         SetRandomPassword();
-        Terminal.WriteLine("Pon el Password (nombre del personaje) para ganar, pista: " + password.Anagram());
+        Terminal.WriteLine("Pon el Password (nombre del jugador) para ganar, pista: " + password.Anagram());
     }
 
     void SetRandomPassword()
@@ -152,38 +152,32 @@ public class Hacker : MonoBehaviour
         {
             case 1:
                 Terminal.WriteLine(@"
-     /|_\|/_/|
-    , ,--,-. .
-   / ( O  O ) \
-   |  (___)'  |
-   |.   ,     |
-  /  '-'\__,' |
-Al final eras Stimpy, muy tonto. Fin.");
+        ____
+       ( () )
+        \  /
+         ||
+         ||
+        [__]
+Adivinaste, eres crack!.");
                 break;
             case 2:
                 Terminal.WriteLine(@"
-        .
-       -|-
-        |
-    .-'~~~`-.
-  .'         `.
-  |  R  I  P  |
-  |           |
-  |           |
-\\|           |//
-Eras Kenny de South Park. Fin.");
+                     ___
+ o__        o__     |   |\
+/|          /\      |   |X\
+/ > o        <\     |   |XX\
+Adivinaste, eres crack!.");
             break;
             case 3:
                 Terminal.WriteLine(@"
 
- |\/\/\/|  
- |      |  
- |      |  
- | (o)(o)  
- C      _) 
-  | ,___|  
-  |   /
-Al final eras Bart pero cuando vende el alma. Fin");
+        ____
+       ( () )
+        \  /
+         ||
+         ||
+        [__]
+Adivinaste, eres crack!");
                 break;
             case 69:
                 Terminal.WriteLine(@"
