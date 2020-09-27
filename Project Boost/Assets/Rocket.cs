@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class Rocket : MonoBehaviour
 {
+    Rigidbody rb;
 
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody>();    
     }
 
     void Update()
@@ -17,18 +18,18 @@ public class Rocket : MonoBehaviour
 
     private void ProcessInput()
     {
-        if (Input.GetKey(KeyCode.Space)) //can thrust 
+        if (Input.GetKey(KeyCode.Space)) //can thrust while rotating
         {
-            print("Space is pressed");
+            rb.AddRelativeForce(Vector3.up);
         }
 
-        else if (Input.GetKey(KeyCode.A)) // can rotate left
+        if (Input.GetKey(KeyCode.A)) 
         {
-            print("A is pressed");
+            print("A KEY is pressed");
         }
-        else if (Input.GetKey(KeyCode.D)) //can rotate right
+        else if (Input.GetKey(KeyCode.D)) 
         {
-            print("d is pressed");
+            print("D KEY is pressed");
         }
     }
 }
