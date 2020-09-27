@@ -1,0 +1,25 @@
+UnityVersionsInfo = {
+    "supported":[
+      {"major": 2020, "minor": 2},
+      {"major": 2020, "minor": 1},
+      {"major": 2019, "minor": 4, "LTS": true}, 
+      {"major": 2018, "minor": 4, "LTS": true}
+    ],
+    "notSupported":[
+      {"major": 2019, "minor": 3},
+      {"major": 2019, "minor": 2},
+      {"major": 2019, "minor": 1},
+      {"major": 2018, "minor": 3}, 
+      {"major": 2018, "minor": 2}, 
+      {"major": 2018, "minor": 1},      
+      {"major": 2017, "minor": 4},
+      {"major": 2017, "minor": 3}, 
+      {"major": 2017, "minor": 2}, 
+      {"major": 2017, "minor": 1},
+      {"major": 5, "minor": 6}, 
+      {"major": 5, "minor": 5}, 
+      {"major": 5, "minor": 4}, 
+      {"major": 5, "minor": 3}, 
+      {"major": 5, "minor": 2}
+    ]
+  }

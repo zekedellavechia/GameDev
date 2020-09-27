@@ -121,40 +121,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &116944918 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1330930200210487416, guid: 9ce41324ec1ad4247a3a9abeedf5fec3,
-    type: 3}
-  m_PrefabInstance: {fileID: 644550787}
-  m_PrefabAsset: {fileID: 0}
---- !u!54 &116944920
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 116944918}
-  serializedVersion: 2
-  m_Mass: 0.3
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!114 &116944921
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 116944918}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: becc2600428cb2848b2c4391e0974572, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &644550787
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -162,6 +128,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 344564415924771248, guid: 9ce41324ec1ad4247a3a9abeedf5fec3,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: c6bc4f8ac36a9df4bb12760f44017cb1, type: 3}
+    - target: {fileID: 344564415924771248, guid: 9ce41324ec1ad4247a3a9abeedf5fec3,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.17
+      objectReference: {fileID: 0}
+    - target: {fileID: 344564415924771248, guid: 9ce41324ec1ad4247a3a9abeedf5fec3,
+        type: 3}
+      propertyPath: m_Pitch
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1330930200210487416, guid: 9ce41324ec1ad4247a3a9abeedf5fec3,
         type: 3}
       propertyPath: m_Name

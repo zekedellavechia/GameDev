@@ -1,0 +1,615 @@
+
+/****************************************
+Feedback
+// Note: this file is not automatically published to the server. If you make changes here, this file needs to be manually updated on the server.
+****************************************/
+
+function InitialiseStarRating()
+{
+    try {
+        // initialise star rating system:
+        var ratecontent = document.querySelector('#feedback-ratecontent'); // target element
+        var currentRating = 0; // initial rating
+        var maxRating= 5; // max rating
+
+
+        // callback to run after setting the rating
+        var callback = function(rating) {
+            document.getElementById('feedback-ratingThanks').style.display = '';
+            document.getElementById('feedback-ratecontent').style.display = 'none';
+            document.getElementById('feedback-rating').style.display = 'none';
+            SendFeedback("rating",rating);
+        };
+
+        // rating instance
+        var myRating = rating(ratecontent, currentRating, maxRating, callback);
+    } catch (err) {
+        console.log("star rating initialise error: "+err);
+    }
+}
+
+
+function GetPageAreaAndType()
+{
+    window.pagearea = "unknown";
+    window.pagetype = "unknown";
+    window.pagetags = "";
+
+    var pageName = window.location.href;
+    pageName = pageName.replace(/^.*?.unity3d.com\//,"");
+
+    
+    // remove version part of URL if not default version
+    if (pageName.includes("/Documentation/"))
+    {
+        pageName = pageName.substr(pageName.indexOf("/Documentation/")+15);
+    }
+
+
+    
+    // if a user manual page defines an area and type in a div tag, we use those values
+    if (pageName.startsWith("Manual/") && document.getElementById('DocsAnalyticsData'))
+    {
+        
+        // check whether this is an auto-generated package page in the user manual:
+        var pageAsPackage = pageName.replace("Manual/","Packages/");
+        var pageAsPackage = pageAsPackage.replace(".html","");
+        console.log("page as package: "+pageAsPackage);
+        if (feedbackAreas[pageAsPackage] != null)
+        {
+            console.log("FOUND page as package: "+feedbackAreas[pageAsPackage]);
+            var data = feedbackAreas[pageAsPackage];
+            window.pagearea = data.area; console.log("area:"+data.area);
+            window.pagetags = data.tags; console.log("tags:"+data.tags);
+            
+        } else {
+
+            window.pagearea = document.getElementById('DocsAnalyticsData').getAttribute("data-area");
+            window.pagetags = document.getElementById('DocsAnalyticsData').getAttribute("data-tags");
+            window.pagetype = document.getElementById('DocsAnalyticsData').getAttribute("data-pagetype");
+        }
+    } else {
+        // otherwise we look at the URL and match using startswith against the Areas lookup table
+        
+        console.log("pagename:"+pageName);
+        
+        // check whether the pagename starts with any of the pageArea keys
+        for (var key in feedbackAreas) {
+            if (pageName.startsWith(key))
+            {
+                var data = feedbackAreas[key];
+                window.pagearea = data.area; console.log("area:"+data.area);
+                window.pagetags = data.tags; console.log("tags:"+data.tags);
+                break;
+            }
+        }
+        
+    // for packages, type is set to package by the URL
+    if (pageName.startsWith("Packages/"))
+        {
+            window.pagetype = "package";
+        }
+
+    // for script reference, type is set to scriptref by the URL
+    if (pageName.startsWith("ScriptReference/"))
+        {
+            window.pagetype = "scriptref";
+        }
+        
+    }
+    
+}
+
+
+function SendFeedback(feedbacktype,feedbackvalue)
+{
+    
+    GetPageAreaAndType();
+
+    
+
+    var eventtype = ( feedbacktype=='rating' ? 'rating-submitted' : 'problem-submitted');
+
+    window.dataLayer = window.dataLayer || [ ];
+    window.dataLayer.push({
+        'event': eventtype,
+        'feedbackType': feedbacktype,
+        'ratingValue': feedbackvalue,
+        'pageArea': pagearea,
+        'pageType': pagetype
+    });
+
+    window.problemDescription = feedbacktype;
+
+    console.log(
+        "sent feedback: \n"+
+        "event:"+eventtype+"\n"+
+        "feedbacktype:"+feedbacktype+"\n"+
+        "feedbackvalue:"+feedbackvalue+"\n"+
+        "pagearea:"+pagearea+"\n"+
+        "pagetype:"+pagetype+"\n"
+    );
+
+    document.getElementById('feedback-rating').style.display = 'none';
+}
+
+
+
+$(function() {
+    
+var scrollToFeedbackBoxHtml = `
+<div class="scrollToFeedback">
+    <a id="scrollToFeedback">Leave feedback</a>
+</div>
+`
+
+var feedbackBoxHtml = `
+<!-- start of feedback box -->
+<hr/>
+<link rel="stylesheet" href="/StaticFilesConfig/feedback/css/rating.css"></link>
+<div class="feedbackbox" id="feedbackbox">
+    <div id="feedback-rating"><p>Did you find this page useful? Please give it a rating:<br/><div id="feedback-ratecontent" class="c-rating"/></p></div>
+    <div id="feedback-ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+    <div id="feedback-problem"><p><a name="problem">Report a problem on this page</a></p></div>
+    <div id="feedback-problemType" style="display:none"><p>What kind of problem would you like to report?
+        <ul type="problems">
+            <li><a name="needcode" id="feedback-problemneedcode">This page needs code samples</a></li>
+            <li><a name="code" id="feedback-problemcode">Code samples do not work</a></li>
+            <li><a name="missing" id="feedback-problemmissing">Information is missing</a></li>
+            <li><a name="incorrect" id="feedback-problemincorrect">Information is incorrect</a></li>
+            <li><a name="unclear" id="feedback-problemunclear">Information is unclear or confusing</a></li>
+            <li><a name="language" id="feedback-problemlanguage">There is a spelling/grammar error on this page</a></li>
+            <li><a name="other" id="feedback-problemother">Something else</a></li>
+        </ul>
+    </div>
+    <div id="feedback-problemThanks" style="display:none">
+        <p>
+            Thanks for letting us know! This page has been marked for review based on your feedback.
+            <br/><br/>If you have time, you can provide more information to help us fix the problem faster.
+            <br/><br/>
+            <a id="feedback-problemThanksMoreInfoButton">Provide more information</a>
+            <br/>
+        </p>
+    </div>
+    <div id="feedback-problemMoreInfo" style="display:none">
+        <p id="feedback-problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+        <p id="feedback-problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+        <p id="feedback-problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+        <p id="feedback-problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+        <p id="feedback-problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+        <p id="feedback-problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+        <p id="feedback-problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+        <form>
+            <textarea id="feedback-problemFormSuggestionField" cols="40" rows="5"></textarea>
+            <input type="submit" id="feedback-problemFormDescriptionSubmit" value="Submit"/>
+        </form>
+    </div>
+    <div id="feedback-problemMoreInfoThanks" style="display:none">
+        <p>Thanks for helping to make the Unity documentation better!</p>
+    </div>
+</div>
+<!-- end of feedback box -->
+`
+
+    console.log("feedback:  initialising");
+    
+    try {
+        // include feedback areas definition file:
+        $.getScript('/StaticFilesConfig/feedback/feedback-areas.js', function() {});
+    } catch (err) {
+        console.log("error:"+err);
+    }
+    
+
+    if (document.getElementById('_content'))
+    {
+        $('#_content').after(feedbackBoxHtml);
+        
+    } else {
+        console.log("feedback: couldn't fined element with id _content");
+    }
+    
+  
+       
+
+
+
+
+
+
+
+
+
+
+        
+        
+    
+    // include rating controller
+    InitialiseRatingController();
+
+
+
+
+    // suggest a problem link (button)
+    $('#feedback-problem').click( function(e) {
+        $('#feedback-problemType').show();
+        $('#feedback-problem').hide();
+    });
+
+    // the problem types:
+   
+   // needs code
+    $('#feedback-problemneedcode').click( function(e) {
+        $('#feedback-problemType').hide();
+        $('#feedback-problemThanks').show();
+        window.problemDescription='Needs code samples';
+        $('#feedback-problemNeedCodeForm').show();
+        SendFeedback('problem-needcode',0);
+    });
+
+    // code (problem in existing code)
+    $('#feedback-problemcode').click( function(e) {
+        $('#feedback-problemType').hide();
+        $('#feedback-problemThanks').show();
+        window.problemDescription='Code samples do not work';
+        $('#feedback-problemCodeForm').show();
+        SendFeedback('problem-brokencode',0);
+    });
+
+
+    // missing information
+    $('#feedback-problemmissing').click( function(e) {
+        $('#feedback-problemType').hide();
+        $('#feedback-problemThanks').show();
+        window.problemDescription='Missing information';
+        $('#feedback-problemMissingForm').show();
+        SendFeedback('problem-missing',0);
+    });
+
+
+    // incorrect information
+    $('#feedback-problemincorrect').click( function(e) {
+        $('#feedback-problemType').hide();
+        $('#feedback-problemThanks').show();
+        window.problemDescription='Incorrect information';
+        $('#feedback-problemIncorrectForm').show();
+        SendFeedback('problem-incorrect',window.location.href,0);
+    });
+
+
+    // unclear
+    $('#feedback-problemunclear').click( function(e) {
+        $('#feedback-problemType').hide();
+        $('#feedback-problemThanks').show();
+        window.problemDescription='Unclear or confusing information';
+        $('#feedback-problemUnclearForm').show();
+        SendFeedback('problem-unclear',0);
+    });
+
+
+    // spelling or grammar (language)
+    $('#feedback-problemlanguage').click( function(e) {
+        $('#feedback-problemType').hide();
+        $('#feedback-problemThanks').show();
+        window.problemDescription='Spelling or grammar error';
+        $('#feedback-problemLanguageForm').show();
+        SendFeedback('problem-language',0);
+    });
+
+
+    // code (problem in existing code)
+    $('#feedback-problemother').click( function(e) {
+        $('#feedback-problemType').hide();
+        $('#feedback-problemThanks').show();
+        window.problemDescription='This page has a problem';
+        $('#feedback-problemOtherForm').show();
+        SendFeedback('problem-other',0);
+    });
+
+
+
+    // submit more info button
+    $('#feedback-problemThanksMoreInfoButton').click( function(e) {
+        $('#feedback-problemThanks').hide();
+        $('#feedback-problemMoreInfo').show();
+    });
+
+
+
+
+
+    // default text in feedback suggestion field
+    $("textarea#problemFormSuggestionField").val('');
+
+    $('.scrollToFeedback').click( function(e) {
+        $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+        setTimeout(function(){
+            $(".feedbackbox").css('background','#ff0');
+        },700);
+        setTimeout(function(){
+            $(".feedbackbox").css('background','#eee');
+        },1100);
+    });
+
+    $('#feedback-problemFormDescriptionSubmit').click( function(e) {
+
+
+
+        // stop the form from submitting the normal way and refreshing the page
+        e.preventDefault();
+       
+        // hide the text entry field and show the thanks text.
+        $("#feedback-problemMoreInfo").hide();
+        $("#feedback-problemMoreInfoThanks").show();
+    
+        var submitURL = "https://bugservices.unity3d.com/docs/api/v1.0/feedback";
+
+        var problemDescription = window.problemDescription;
+        var page = window.location.href;
+        
+        // remove named anchor if present:
+        page = page.replace(/#.*/,"");
+
+
+        var suggestion = $("textarea#feedback-problemFormSuggestionField").val();
+        
+        var url = page;
+        
+        // we ignore empty submissions and do nothing (but still say thanks!)
+        if (suggestion.trim() == "") {
+            return false;
+        }
+
+ 
+        // check for non-default version of docs
+        var version = ""+page.match(/[/@][0-9.].*?\//);
+        if (version == "null") {
+            version = "";
+        } else {
+            version = version.replace(/[/@]/g,'');
+            version = "("+version+") ";
+        }
+
+        // strip out the beginning part of the URL up to either Manual or ScriptReference
+        if (page.indexOf("/Manual/") > -1)
+        {
+            page = page.replace(/^.*?\/Manual\//,"Manual/")
+        }
+
+        if (page.indexOf("/ScriptReference/") > -1)
+        {
+            page = page.replace(/^.*?\/ScriptReference\//,"ScriptReference/");
+        }
+
+        if (page.indexOf("/Packages/") > -1)
+        {
+            page = page.replace(/^.*?\/Packages\//,"Packages/");
+        }
+        
+        var tags = "";
+        var areaId = 599; // default (doc suggest bugs, for unassigned pages)
+        if (window.pagearea == "none") { areaId = 153; tags = "foundation-docs"; } // (product-wide pages)
+        if (window.pagearea == "graphics") { areaId = 2579; tags = "graphics-docs"; }
+        if (window.pagearea == "core") { areaId = 2580; tags = "core-docs"; }
+        if (window.pagearea == "authoring") { areaId = 2581; tags = "authoring-tools-docs"; }
+        if (window.pagearea == "monetization") { areaId = 2582; tags = "monetization-docs"; }
+        if (window.pagearea == "cloud") { areaId = 2583; tags = "cloud-services-docs"; }
+        if (window.pagearea == "platforms") { areaId = 2584; tags = "platforms-docs"; }
+
+        if (window.pagetags != "") { tags += ","+window.pagetags; }
+
+        // extra data added to feedback description
+        suggestion += "\r\n\r\n----------------";
+        suggestion += "\r\n"+problemDescription;
+        suggestion += "\r\nURL: "+url;
+        suggestion += "\r\ndocsarea-"+window.pagearea;
+        suggestion += "\r\ndocstype-"+window.pagetype;
+
+        var postData = {
+            "title":page+" "+version,
+            "description":suggestion,
+            "areaId":areaId,
+            "tag":tags
+        };
+
+		console.log("post data:");
+		console.log(postData);
+        
+        $.ajax({
+            type : 'POST',
+            url : submitURL,
+            data : postData,
+            dataType : 'json',
+            encode : true
+        })
+
+        .done(function(data) {
+
+            //alert("Data returned:"+data);
+
+        });
+
+
+         return false;
+    });
+    
+    
+    InitialiseStarRating();
+    
+    console.log("feedback: setup done");
+
+
+});
+
+function InitialiseRatingController() {
+
+  'use strict';
+
+   
+  /**
+   * rating
+   * 
+   * @description The rating component.
+   * @param {HTMLElement} el The HTMl element to build the rating widget on
+   * @param {Number} currentRating The current rating value
+   * @param {Number} maxRating The max rating for the widget
+   * @param {Function} callback The optional callback to run after set rating
+   * @return {Object} Some public methods
+   */
+  function rating(el, currentRating, maxRating, callback) {
+    
+    /**
+     * stars
+     * 
+     * @description The collection of stars in the rating.
+     * @type {Array}
+     */
+    var stars = [];
+
+    /**
+     * init
+     *
+     * @description Initializes the rating widget. Returns nothing.
+     */
+    (function init() {
+      if (!el) { throw Error('No element supplied.'); }
+      if (!maxRating) { throw Error('No max rating supplied.'); }
+      if (!currentRating) { currentRating = 0; }
+      if (currentRating < 0 || currentRating > maxRating) { throw Error('Current rating is out of bounds.'); }
+
+      for (var i = 0; i < maxRating; i++) {
+        var star = document.createElement('li');
+        star.classList.add('c-rating__item');
+        star.setAttribute('data-index', i);
+        if (i < currentRating) { star.classList.add('is-active'); }
+        el.appendChild(star);
+        stars.push(star);
+        attachStarEvents(star);
+      }
+    })();
+
+    /**
+     * iterate
+     *
+     * @description A simple iterator used to loop over the stars collection.
+     *   Returns nothing.
+     * @param {Array} collection The collection to be iterated
+     * @param {Function} callback The callback to run on items in the collection
+     */
+    function iterate(collection, callback) {
+      for (var i = 0; i < collection.length; i++) {
+        var item = collection[i];
+        callback(item, i);
+      }
+    }
+
+    /**
+     * attachStarEvents
+     *
+     * @description Attaches events to each star in the collection. Returns
+     *   nothing.
+     * @param {HTMLElement} star The star element
+     */
+    function attachStarEvents(star) {
+      starMouseOver(star);
+      starMouseOut(star);
+      starClick(star);
+    }
+
+    /**
+     * starMouseOver
+     *
+     * @description The mouseover event for the star. Returns nothing.
+     * @param {HTMLElement} star The star element
+     */
+    function starMouseOver(star) {
+      star.addEventListener('mouseover', function(e) {
+        iterate(stars, function(item, index) {
+          if (index <= parseInt(star.getAttribute('data-index'))) {
+            item.classList.add('is-active');
+          } else {
+            item.classList.remove('is-active');
+          }
+        });
+      });
+    }
+
+    /**
+     * starMouseOut
+     *
+     * @description The mouseout event for the star. Returns nothing.
+     * @param {HTMLElement} star The star element
+     */
+    function starMouseOut(star) {
+      star.addEventListener('mouseout', function(e) {
+        if (stars.indexOf(e.relatedTarget) === -1) {
+          setRating(null, false);
+        }
+      });
+    }
+
+    /**
+     * starClick
+     *
+     * @description The click event for the star. Returns nothing.
+     * @param {HTMLElement} star The star element
+     */
+    function starClick(star) {
+      star.addEventListener('click', function(e) {
+        e.preventDefault();
+        setRating(parseInt(star.getAttribute('data-index')) + 1, true);
+      });
+    }
+
+    /**
+     * setRating
+     *
+     * @description Sets and updates the currentRating of the widget, and runs
+     *   the callback if supplied. Returns nothing.
+     * @param {Number} value The number to set the rating to
+     * @param {Boolean} doCallback A boolean to determine whether to run the
+     *   callback or not
+     */
+    function setRating(value, doCallback) {
+      if (value && value < 0 || value > maxRating) { return; }
+      if (doCallback === undefined) { doCallback = true; }
+
+      currentRating = value || currentRating;
+
+      iterate(stars, function(star, index) {
+        if (index < currentRating) {
+          star.classList.add('is-active');
+        } else {
+          star.classList.remove('is-active');
+        }
+      });
+
+      if (callback && doCallback) { callback(getRating()); }
+    }
+
+    /**
+     * getRating
+     *
+     * @description Gets the current rating.
+     * @return {Number} The current rating
+     */
+    function getRating() {
+      return currentRating;
+    }
+
+    /**
+     * Returns the setRating and getRating methods
+     */
+    return {
+      setRating: setRating,
+      getRating: getRating
+    };
+
+  }
+
+  /**
+   * Add to global namespace
+   */
+  window.rating = rating;
+
+};

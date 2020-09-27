@@ -5,10 +5,12 @@ using UnityEngine;
 public class Rocket : MonoBehaviour
 {
     Rigidbody rb;
+    AudioSource audioSource;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();    
+        rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -21,15 +23,26 @@ public class Rocket : MonoBehaviour
         if (Input.GetKey(KeyCode.Space)) //can thrust while rotating
         {
             rb.AddRelativeForce(Vector3.up);
+            if (audioSource.isPlaying == false)
+            {
+                audioSource.Play();
+            }
         }
+        else
+        {
+            audioSource.Stop();
+        }
+        
 
         if (Input.GetKey(KeyCode.A)) 
         {
-            print("A KEY is pressed");
+            transform.Rotate(Vector3.forward);
         }
         else if (Input.GetKey(KeyCode.D)) 
         {
-            print("D KEY is pressed");
+            transform.Rotate(-Vector3.forward);
         }
+
+   
     }
 }
