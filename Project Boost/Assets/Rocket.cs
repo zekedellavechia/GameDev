@@ -8,6 +8,7 @@ public class Rocket : MonoBehaviour
     AudioSource audioSource;
 
     [SerializeField] float rcsThrust = 100f;
+    [SerializeField] float mainThrust = 100f;
 
     void Start()
     {
@@ -25,12 +26,29 @@ public class Rocket : MonoBehaviour
         Thrust();
         Rotate();
     }
+
+    private void OnCollisionEnter(Collision collision)  // Type Collision . Variable collision 
+    {
+        switch (collision.gameObject.tag)
+        {
+            case "Friendly":
+                print("Collide with Friendly");
+                break;
+            case "Respawn":
+                print("Collide with Respawn");
+                break;
+            default:
+                print("Death"); //todo Kill the Player
+                break;
+        }
+    }
+
     private void Thrust()
     {
-
+        
         if (Input.GetKey(KeyCode.Space)) //can thrust while rotating
         {
-            rb.AddRelativeForce(Vector3.up);
+            rb.AddRelativeForce(Vector3.up * mainThrust);
             if (audioSource.isPlaying == false)
             {
                 audioSource.Play();
