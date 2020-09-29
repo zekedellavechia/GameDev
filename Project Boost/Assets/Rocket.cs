@@ -5,7 +5,7 @@ public class Rocket : MonoBehaviour
 {
     Rigidbody rb;
     AudioSource audioSource;
-    public float invokingTime;
+    public float levelLoadDelay;
     enum State { Alive, Dying, Transcending }
     State state = State.Alive;
 
@@ -71,15 +71,16 @@ public class Rocket : MonoBehaviour
         audioSource.Stop();
         audioSource.PlayOneShot(success);
         successParticles.Play();
-        Invoke("LoadNextScene", invokingTime);
+        Invoke("LoadNextScene", levelLoadDelay);
     }
     private void StartDeathSecuence()
     {
         state = State.Dying;
         audioSource.Stop();
         audioSource.PlayOneShot(dead);
+     
         deadParticles.Play();
-        Invoke("RestartLevel", invokingTime);
+        Invoke("RestartLevel", levelLoadDelay);
     }
     private void LoadNextScene()
     {
@@ -104,7 +105,8 @@ public class Rocket : MonoBehaviour
     }
     private void ApplyThrust()
     {
-        rb.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
+
+        rb.AddRelativeForce(Vector3.up * mainThrust);
 
         if (audioSource.isPlaying == false)
         {
