@@ -549,7 +549,7 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: 61293c2a8a8cb4b458237843585d9dc4, type: 3}
     - target: {fileID: 116944921, guid: 9ce41324ec1ad4247a3a9abeedf5fec3, type: 3}
       propertyPath: mainThrust
-      value: 200
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 1945297856, guid: 9ce41324ec1ad4247a3a9abeedf5fec3, type: 3}
       propertyPath: m_SpotAngle
