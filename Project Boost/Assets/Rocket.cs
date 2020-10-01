@@ -140,7 +140,7 @@ public class Rocket : MonoBehaviour
     private void ApplyThrust()
     {
 
-        rb.AddRelativeForce(Vector3.up * mainThrust);
+        rb.AddRelativeForce(Vector3.up * mainThrust *Time.deltaTime);
 
         if (audioSource.isPlaying == false)
         {
