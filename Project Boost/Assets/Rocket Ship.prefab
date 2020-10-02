@@ -268,6 +268,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelLoadDelay: 2
+  disparo: {fileID: 0}
   rcsThrust: 200
   mainThrust: 20
   mainEngine: {fileID: 8300000, guid: 0ff345224f45f9340953b162929e5f4b, type: 3}

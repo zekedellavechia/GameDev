@@ -6,7 +6,11 @@ public class Rocket : MonoBehaviour
 {
     Rigidbody rb;
     AudioSource audioSource;
-    public float levelLoadDelay;
+    [Range(0, 5)] public float levelLoadDelay;
+    //public Rigidbody disparo;
+
+
+    bool isThrusting = false;
     //enum State { Alive, Dying, Transcending }  replaced by istransitioning
     //State state = State.Alive;  replaced by istransitioning
 
@@ -14,8 +18,8 @@ public class Rocket : MonoBehaviour
 
 
 
-    [SerializeField] float rcsThrust = 100f;
-    [SerializeField] float mainThrust = 100f;
+    [SerializeField] [Range(50, 300)] float rcsThrust;
+    [SerializeField] [Range(50, 300)] float mainThrust;
 
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip success;
@@ -34,12 +38,30 @@ public class Rocket : MonoBehaviour
 
     }
 
-
+    private void RespondToDebugKeys()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            LoadNextScene();
+        }
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+            collisionsDisabled = !collisionsDisabled;
+        }
+    }
 
     void Update()
     {
         ProcessInput();
+
+        //aca meti mano
+       // if (Input.GetKeyDown(KeyCode.C))
+       // {
+       //     Instantiate(disparo);
+        //}
+       
     }
+
 
     private void ProcessInput()
     { if (!isTransitioning)
@@ -54,17 +76,49 @@ public class Rocket : MonoBehaviour
 
     }
 
-    private void RespondToDebugKeys()
+    private void RespondToThrustInput()
     {
-       if (Input.GetKeyDown(KeyCode.L))
+        isThrusting = Input.GetKey(KeyCode.Space);
+
+        if (isThrusting)
         {
-            LoadNextScene();
+            ApplyThrustEffects();
         }
-       else if (Input.GetKeyDown(KeyCode.C))
+        else
         {
-            collisionsDisabled = !collisionsDisabled;
-        }    
+            StopApplyingThrust();
+        }
     }
+
+    private void ApplyThrustEffects()
+    {
+
+        if (!audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(mainEngine);
+        }
+        mainEngineParticles.Play();
+
+    }
+
+    private void FixedUpdate()
+    {
+        if (isThrusting)
+        {
+            rb.AddRelativeForce(Vector3.up * mainThrust, ForceMode.Acceleration);
+        }
+    }
+
+
+
+    private void StopApplyingThrust()
+    {
+        audioSource.Stop();
+        mainEngineParticles.Stop();
+    }
+
+
+   
 
     private void OnCollisionEnter(Collision collision)  // Type Collision . Variable collision 
     {
@@ -123,38 +177,9 @@ public class Rocket : MonoBehaviour
     {
         SceneManager.LoadScene(0);
     }
-    private void RespondToThrustInput()
-    {
-        
-        if (Input.GetKey(KeyCode.Space)) //can thrust while rotating
-        {
-            ApplyThrust();
-        }
-        else
-        {
-            StopApplyingThrust();
-        }
-    }
 
 
-    private void ApplyThrust()
-    {
-
-        rb.AddRelativeForce(Vector3.up * mainThrust, ForceMode.Acceleration);
-
-        if (audioSource.isPlaying == false)
-        {
-            audioSource.PlayOneShot(mainEngine);
-        }
-        mainEngineParticles.Play();
-
-    }
-    private void StopApplyingThrust()
-    {
-        audioSource.Stop();
-        mainEngineParticles.Stop();
-    }
-
+  
     private void Rotate()
     {
         rb.angularVelocity = Vector3.zero;
