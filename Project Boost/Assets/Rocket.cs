@@ -123,21 +123,23 @@ public class Rocket : MonoBehaviour
     private void OnCollisionEnter(Collision collision)  // Type Collision . Variable collision 
     {
         if (isTransitioning || collisionsDisabled ) { return; }
-     
+
 
         switch (collision.gameObject.tag)
-        {     
+        {
             case "Friendly":
                 print("Collide with Friendly");
-            break;
+                break;
             case "Respawn":
                 print("Collide with Respawn");
-            break;
+                break;
             case "Finish":
                 StartSuccessSequence();
                 break;
             default:
                 StartDeathSecuence();
+                //todo agregar un destroy
+                
                 break;
         }
 
@@ -158,7 +160,6 @@ public class Rocket : MonoBehaviour
         isTransitioning = true;
         audioSource.Stop();
         audioSource.PlayOneShot(dead);
-     
         deadParticles.Play();
         Invoke("RestartLevel", levelLoadDelay);
     }
